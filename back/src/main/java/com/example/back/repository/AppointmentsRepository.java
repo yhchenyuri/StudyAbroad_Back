@@ -1,10 +1,12 @@
 package com.example.back.repository;
 
-public class AppointmentsRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+import com.example.back.model.Appointments;
 
-	}
-
+@Repository
+public interface AppointmentsRepository extends JpaRepository<Appointments, Integer> {
+	 boolean existsByEmail(String email); // 防重複
 }
+
