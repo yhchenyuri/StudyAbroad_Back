@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-TW" ng-app="adminApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>課程管理系統 | StudyAbroad 後台</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary-dark: #0a2647;
+            --accent-orange: #ff9800;
+            --bg-light: #f0f4f8;
+            --logout-pink: #ff8a8a;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Noto Sans TC', 'Montserrat', sans-serif;
+            margin: 0;
+            display: flex;
+        }
+
+        /* --- 1. 側邊欄 Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--primary-dark);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-orange), #ffb74d);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 auto 10px;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 10px 0;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 25px;
+            margin: 4px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-link i {
+            width: 30px;
+            font-size: 1.1rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-orange) !important;
+        }
+
+        /* --- 2. 左下角登出按鈕 --- */
+        .sidebar-footer {
+            padding: 20px 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-logout-cute {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--logout-pink);
+            background: rgba(255, 138, 138, 0.1);
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logout-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--logout-pink);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-logout-cute:hover {
+            background: var(--logout-pink);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 138, 138, 0.3);
+        }
+
+        .btn-logout-cute:hover .logout-icon {
+            background: white;
+            color: var(--logout-pink);
+            transform: rotate(-10deg);
+        }
+
+        /* --- 3. 主內容區 Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .card-stat {
+            border: none;
+            border-radius: 20px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+            text-align: center;
+        }
+
+        .card-table-container {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: none;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            border-top: none;
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            font-size: 0.95rem;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--primary-dark), #1a4d8a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(10, 38, 71, 0.2);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* --- RWD --- */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body ng-controller="CourseController">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <h6 class="text-white fw-bold mb-0">StudyAbroad</h6>
+            <small class="text-white-50" style="letter-spacing: 1px;">MANAGEMENT</small>
+        </div>
+
+        <div class="sidebar-nav">
+            <nav>
+                <a href="/admin/courses" class="nav-link active"><i class="fa-solid fa-book-open"></i> 課程管理</a>
+                <a href="/admin/orders" class="nav-link"><i class="fa-solid fa-receipt"></i> 訂單管理</a>
+                <a href="/admin/visitors" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> 訪客紀錄</a>
+                <a href="/admin/students" class="nav-link"><i class="fa-solid fa-user-graduate"></i> 學生資料</a>
+                <a href="/admin/staff" class="nav-link"><i class="fa-solid fa-user-gear"></i> 員工管理</a>
+            </nav>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="/login" class="btn-logout-cute">
+                <div class="logout-icon">
+                    <i class="fa-solid fa-person-walking-arrow-right"></i>
+                </div>
+                <span>登出系統</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div>
+                <h3 class="fw-bold text-dark">課程專案管理</h3>
+                <p class="text-muted small">在此管理各國留學課程與報名狀態</p>
+            </div>
+            <button class="btn btn-add" ng-click="openAddModal()">
+                <i class="fa-solid fa-plus me-2"></i> 新增課程
+            </button>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <small class="text-muted">上架中課程</small>
+                    <h2 class="fw-bold mb-0 text-primary">{{ courses.length }}</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <small class="text-muted">本月報名總數</small>
+                    <h2 class="fw-bold mb-0 text-success">{{ getTotalEnrollment() }} 人</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-table-container">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>圖片</th>
+                            <th>國家名稱</th>
+                            <th>課程 ID</th>
+                            <th>課程名稱</th>
+                            <th>費用</th>
+                            <th>報名人數 (已報)</th>
+                            <th>日期範圍</th>
+                            <th>狀態</th>
+                            <th class="text-end">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="course in courses">
+                            <td>
+                                <img ng-src="http://localhost:8080/api/courses/{{course.id}}/image" alt="Course" style="width: 50px; height: 35px; object-fit: cover; border-radius: 5px;">
+                            </td>
+                            <td><span class="badge bg-light text-dark border me-1">國家</span> {{course.countryId}}</td>
+                            <td><code>{{course.id}}</code></td>
+                            <td class="fw-bold">{{course.courseName}}</td>
+                            <td class="text-primary fw-bold">NT${{course.price}}</td>
+                            <td>
+                                <div class="progress mb-1" style="height: 6px; width: 100px;">
+                                    <div class="progress-bar bg-primary" style="width: 75%"></div>
+                                </div>
+                               <span class="badge bg-info text-dark">{{ course.currentEnrollment || 0 }} 人</span>
+                            </td>
+                            <td><small>{{ course.startDate || '未定' }} - {{ course.endDate || '未定' }}</small></td>
+                            <td>
+                                 <span class="status-badge" ng-class="course.isActive ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+                                    {{ course.isActive ? '上架中' : '已下架' }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-light rounded-circle me-1" ng-click="openEditModal(course)">
+                                <i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn btn-sm btn-light text-danger rounded-circle" ng-click="deleteCourse(course.id)"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="addCourseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+                <div class="modal-header border-0 p-4 pb-0">
+                    <h5 class="fw-bold"><i class="fa-solid fa-plus-circle me-2 text-primary"></i>建立新課程</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">國家名稱</label>
+                            <select class="form-select rounded-3" ng-model="newCourse.countryId">
+                                <option value="" disabled>請選擇國家</option>
+                                <option value="2">美國 (USA)</option>
+                                <option value="3">英國 (UK)</option>
+                        </select> </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">課程 ID</label>
+                            <input type="text" class="form-control rounded-3" ng-model="newCourse.id" placeholder="系統自動生成" disabled>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">狀態</label>
+                            <select class="form-select rounded-3" ng-model="newCourse.isActive">
+                                <option value="true">上架</option>
+                                <option value="false">下架</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold">課程完整名稱</label>
+                            <input type="text" class="form-control rounded-3" ng-model="newCourse.courseName">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">費用 (TWD)</label>
+                            <input type="number" class="form-control rounded-3" ng-model="newCourse.price">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">已報名人數</label>
+                            <input type="number" class="form-control rounded-3" ng-model="newCourse.currentEnrollment" placeholder="0" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">課程開始時間</label>
+                            <input type="date" class="form-control rounded-3" ng-model="newCourse.startDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">課程結束時間</label>
+                            <input type="date" class="form-control rounded-3" ng-model="newCourse.endDate">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold">備註</label>
+                            <textarea class="form-control rounded-3" rows="3" placeholder="特殊要求或注意事項..." ng-model="newCourse.remarks"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-primary"><i class="fa-solid fa-image me-1"></i>上傳課程圖片 (必填)</label>
+                            <input type="file" class="form-control rounded-3" id="courseImage" accept="image/*">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" ng-click="saveCourse()">確認儲存並上架</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var app = angular.module('adminApp', []);
+
+        app.controller('CourseController', function ($scope, $http) {
+            
+            $scope.courses = [];
+            $scope.newCourse = { isActive: "true" };
+
+            $scope.getTotalEnrollment = function() {
+                var total = 0;
+                for(var i = 0; i < $scope.courses.length; i++) {
+                    // 把每一堂課的人數加起來，如果沒有值就當作 0
+                    total += ($scope.courses[i].currentEnrollment || 0);
+                }
+                return total;
+            };
+
+            $scope.loadCourses = function() {
+                $http.get('http://localhost:8080/api/courses/list').then(function(response) {
+                    $scope.courses = response.data;
+                }, function(error) {
+                    console.error("無法載入課程列表", error);
+                });
+            };
+
+            // 啟動時馬上載入一次
+            $scope.loadCourses();
+
+            // 🌟 新增：打開編輯視窗並帶入資料
+            $scope.openEditModal = function(course) {
+                // 深拷貝一份資料，避免還沒存檔就改到表格上的字
+                $scope.newCourse = angular.copy(course);
+                
+                // 把 Boolean 轉回下拉選單看得懂的字串
+                $scope.newCourse.isActive = course.isActive ? "true" : "false";
+
+                // 將字串日期轉換為 JavaScript Date 物件，這樣 <input type="date"> 才顯示得出來
+                if (course.startDate) $scope.newCourse.startDate = new Date(course.startDate);
+                if (course.endDate) $scope.newCourse.endDate = new Date(course.endDate);
+
+                // 清空檔案上傳框 (因為編輯時不一定要換圖片)
+                if(document.getElementById('courseImage')) {
+                    document.getElementById('courseImage').value = '';
+                }
+
+                // 呼叫 Bootstrap 語法打開 Modal
+                var myModal = new bootstrap.Modal(document.getElementById('addCourseModal'));
+                myModal.show();
+            };
+
+            // 2. 新增課程並上傳圖片
+            $scope.saveCourse = function () {
+                var formData = new FormData();
+                formData.append("courseName", $scope.newCourse.courseName || '');
+                formData.append("price", $scope.newCourse.price || 0);
+                formData.append("countryId", $scope.newCourse.countryId || '');
+                formData.append("isActive", $scope.newCourse.isActive);
+                formData.append("remarks", $scope.newCourse.remarks || '');
+
+                if ($scope.newCourse.startDate) {
+                    formData.append("startDate", $scope.newCourse.startDate.toISOString().split('T')[0]);
+                }
+                if ($scope.newCourse.endDate) {
+                    formData.append("endDate", $scope.newCourse.endDate.toISOString().split('T')[0]);
+                }
+
+                if ($scope.newCourse.id) {
+                    formData.append("id", $scope.newCourse.id);
+                }
+
+                    formData.append("courseName", $scope.newCourse.courseName || '');
+
+                // 檢查並抓取圖片
+                var fileInput = document.getElementById('courseImage');
+                if (fileInput.files.length > 0) {
+                    formData.append("fileData", fileInput.files[0]);
+                } else {
+                    alert("請選擇一張課程圖片！");
+                    return;
+                }
+
+                $http.post('http://localhost:8080/api/courses/upload', formData, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined } 
+                }).then(function (response) {
+                    alert("課程新增成功！");
+                    
+                    // 關閉 Modal
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
+                    modal.hide();
+                    
+                    // 清空表單並重新載入列表
+                    $scope.newCourse = { isActive: "true" };
+                    document.getElementById('courseImage').value = '';
+                    $scope.loadCourses(); 
+                    
+                }, function (error) {
+                    alert("新增失敗，請檢查輸入資料或連線！");
+                    console.error(error);
+                });
+            };
+
+            // 3. 刪除課程
+            $scope.deleteCourse = function(id) {
+                if(confirm("確定要刪除這筆課程嗎？刪除後無法復原！")) {
+                    $http.delete('http://localhost:8080/api/courses/' + id).then(function(response) {
+                        alert("課程已刪除");
+                        $scope.loadCourses(); // 重新整理列表
+                    }, function(error) {
+                        alert("刪除失敗");
+                    });
+                }
+            };
+        });
+
+
+
+    </script>
+</body>
+
+</html>
