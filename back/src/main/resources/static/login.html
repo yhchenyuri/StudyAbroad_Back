@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理系統登入 | StudyAbroad Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0a2647;
+            --accent-orange: #ff9800;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-logo {
+            text-align: center;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 0.25rem rgba(10, 38, 71, 0.1);
+        }
+
+        .btn-admin-login {
+            background-color: var(--primary-dark);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-admin-login:hover {
+            background-color: #144272;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body ng-controller="StaffController">
+
+    <div class="login-container">
+        <div class="admin-logo">
+            <i class="fa-solid fa-shield-halved fa-3x mb-3"></i>
+            <h4 class="fw-bold">StudyAbroad</h4>
+            <span class="text-muted small">代辦服務後台管理系統</span>
+        </div>
+        <form action="/login" method="POST">
+            <div class="mb-3">
+                <label class="form-label small fw-bold">管理員帳號(請輸入員工編號)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i
+                            class="fa-solid fa-user text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0" name="username" placeholder="Username" required>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label small fw-bold">安全密碼</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i
+                            class="fa-solid fa-lock text-muted"></i></span>
+                    <input type="password" class="form-control border-start-0" name="password" placeholder="Password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-admin-login">安全登入</button>
+        </form>
+    </div>
+
+</body>
+
+</html>
