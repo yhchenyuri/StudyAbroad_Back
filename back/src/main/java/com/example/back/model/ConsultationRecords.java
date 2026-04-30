@@ -3,6 +3,9 @@ package com.example.back.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+// 引入 JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "consultation_records")
 public class ConsultationRecords {
@@ -12,6 +15,7 @@ public class ConsultationRecords {
     private Integer id; // 對應資料庫 int
 
     // 變數名稱對齊 consultations_id，並精準映射到資料庫的外鍵欄位
+    @JsonIgnore // 🌟 加上這行，阻斷 JSON 轉換時回頭去查主表的無限迴圈
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consultations_id", nullable = false)
     private Consultations consultationsId;

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "consultations")
 public class Consultations {
@@ -19,7 +21,8 @@ public class Consultations {
     private Appointments appointmentsId;
 
     // 改名為 employeesId，並對應 employees_id 欄位
-    @ManyToOne(fetch = FetchType.LAZY)
+    
+    @ManyToOne 
     @JoinColumn(name = "employees_id")
     private Employees employeesId;
 
@@ -35,6 +38,7 @@ public class Consultations {
     @Column(name = "latest_next_step")
     private String latestNextStep; // 對應 varchar
 
+    
     @OneToMany(mappedBy = "consultationsId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ConsultationRecords> records = new ArrayList<>();
 
