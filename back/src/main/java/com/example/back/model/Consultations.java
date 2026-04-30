@@ -24,7 +24,7 @@ public class Consultations {
     
     @ManyToOne 
     @JoinColumn(name = "employees_id")
-    private Employees employeesId;
+    private Employee employeesId;
 
     @Column(name = "status")
     private String status; // 對應 varchar
@@ -65,11 +65,11 @@ public class Consultations {
         this.appointmentsId = appointmentsId;
     }
 
-    public Employees getEmployeesId() {
+    public Employee getEmployeesId() {
         return employeesId;
     }
 
-    public void setEmployeesId(Employees employeesId) {
+    public void setEmployeesId(Employee employeesId) {
         this.employeesId = employeesId;
     }
 

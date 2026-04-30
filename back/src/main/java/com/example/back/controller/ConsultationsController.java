@@ -5,7 +5,7 @@ import com.example.back.dto.ConsultantWorkloadDto;
 import com.example.back.dto.AssignRequestDto;
 import com.example.back.dto.RecordRequestDto;
 import com.example.back.service.ConsultationsService;
-import com.example.back.repository.EmployeesRepository;
+import com.example.back.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,7 @@ public class ConsultationsController {
     private ConsultationsService consultationsService;
 
     @Autowired
-    private EmployeesRepository employeesRepo;
+    private EmployeeRepository employeesRepo;
 
     // ==========================================
     // 讀取功能 (GET)
