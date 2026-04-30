@@ -220,17 +220,17 @@
         </div>
 
         <div class="sidebar-nav">
-            <nav>
-                <a href="/admin/courses" class="nav-link active"><i class="fa-solid fa-book-open"></i> 課程管理</a>
-                <a href="/admin/orders" class="nav-link"><i class="fa-solid fa-receipt"></i> 訂單管理</a>
-                <a href="/admin/visitors" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> 訪客紀錄</a>
-                <a href="/admin/students" class="nav-link"><i class="fa-solid fa-user-graduate"></i> 學生資料</a>
-                <a href="/admin/staff" class="nav-link"><i class="fa-solid fa-user-gear"></i> 員工管理</a>
-            </nav>
+          <nav>
+                <a href="/courses.html" class="nav-link active"><i class="fa-solid fa-book-open"></i> 課程管理</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-receipt"></i> 訂單管理 (開發中)</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> 訪客紀錄 (開發中)</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-user-graduate"></i> 學生資料 (開發中)</a>
+                <a href="/staff.html" class="nav-link" ng-if="userRole === 'ROLE_ADMIN'"><i class="fa-solid fa-user-gear"></i> 員工管理</a>
+          </nav>
         </div>
 
         <div class="sidebar-footer">
-            <a href="/login" class="btn-logout-cute">
+            <a href="/login.html" class="btn-logout-cute">
                 <div class="logout-icon">
                     <i class="fa-solid fa-person-walking-arrow-right"></i>
                 </div>
@@ -245,7 +245,7 @@
                 <h3 class="fw-bold text-dark">課程專案管理</h3>
                 <p class="text-muted small">在此管理各國留學課程與報名狀態</p>
             </div>
-            <button class="btn btn-add" ng-click="openAddModal()">
+            <button class="btn btn-add" ng-click="openAddModal()" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'">
                 <i class="fa-solid fa-plus me-2"></i> 新增課程
             </button>
         </div>
@@ -278,7 +278,7 @@
                             <th>報名人數 (已報)</th>
                             <th>日期範圍</th>
                             <th>狀態</th>
-                            <th class="text-end">操作</th>
+                            <th class="text-end" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'">操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -302,7 +302,7 @@
                                     {{ course.isActive ? '上架中' : '已下架' }}
                                 </span>
                             </td>
-                            <td class="text-end">
+                            <td class="text-end" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'">
                                 <button class="btn btn-sm btn-light rounded-circle me-1" ng-click="openEditModal(course)">
                                 <i class="fa-solid fa-pen-to-square"></i></button>
                                 <button class="btn btn-sm btn-light text-danger rounded-circle" ng-click="deleteCourse(course.id)"><i class="fa-solid fa-trash-can"></i></button>
@@ -388,6 +388,13 @@
             $scope.courses = [];
             $scope.newCourse = { isActive: "true" };
 
+            $scope.userRole = "";
+            $http.get('http://localhost:8080/api/auth/me').then(function(response) {
+                $scope.userRole = response.data.role;
+            }).catch(function(err){
+                console.log("無法取得權限或未登入", err);
+            });
+
             $scope.getTotalEnrollment = function() {
                 var total = 0;
                 for(var i = 0; i < $scope.courses.length; i++) {
@@ -408,6 +415,21 @@
             // 啟動時馬上載入一次
             $scope.loadCourses();
 
+            // 🌟 專門用來打開「新增課程」的視窗並清空舊資料
+            $scope.openAddModal = function() {
+                // 1. 把資料還原成乾淨的預設值 (並且清空 id)
+                $scope.newCourse = { isActive: "true" };
+                
+                // 2. 清空檔案上傳框的圖片
+                if(document.getElementById('courseImage')) {
+                    document.getElementById('courseImage').value = '';
+                }
+                
+                // 3. 呼叫 Bootstrap 打開視窗
+                var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addCourseModal'));
+                myModal.show();
+            };
+
             // 🌟 新增：打開編輯視窗並帶入資料
             $scope.openEditModal = function(course) {
                 // 深拷貝一份資料，避免還沒存檔就改到表格上的字
@@ -415,6 +437,10 @@
                 
                 // 把 Boolean 轉回下拉選單看得懂的字串
                 $scope.newCourse.isActive = course.isActive ? "true" : "false";
+                // 將國家的數字轉換成字串，下拉選單才認得出來！
+                if ($scope.newCourse.countryId) {
+                    $scope.newCourse.countryId = $scope.newCourse.countryId.toString();
+                }
 
                 // 將字串日期轉換為 JavaScript Date 物件，這樣 <input type="date"> 才顯示得出來
                 if (course.startDate) $scope.newCourse.startDate = new Date(course.startDate);
@@ -430,7 +456,7 @@
                 myModal.show();
             };
 
-            // 2. 新增課程並上傳圖片
+// 2. 新增課程並上傳圖片
             $scope.saveCourse = function () {
                 var formData = new FormData();
                 formData.append("courseName", $scope.newCourse.courseName || '');
@@ -450,53 +476,56 @@
                     formData.append("id", $scope.newCourse.id);
                 }
 
-                    formData.append("courseName", $scope.newCourse.courseName || '');
-
                 // 檢查並抓取圖片
                 var fileInput = document.getElementById('courseImage');
                 if (fileInput.files.length > 0) {
                     formData.append("fileData", fileInput.files[0]);
                 } else {
-                    alert("請選擇一張課程圖片！");
-                    return;
+                    if (!$scope.newCourse.id) {
+                        alert("請選擇一張課程圖片！");
+                        return;
+                    }
                 }
 
+                
                 $http.post('http://localhost:8080/api/courses/upload', formData, {
                     transformRequest: angular.identity,
-                    headers: { 'Content-Type': undefined } 
+                    headers: { 'Content-Type': undefined },
+                    // 🌟 終極殺手鐧：叫 AngularJS 不准解析 JSON，原封不動把純文字收下來！
+                    transformResponse: angular.identity 
                 }).then(function (response) {
-                    alert("課程新增成功！");
-                    
-                    // 關閉 Modal
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
-                    modal.hide();
-                    
-                    // 清空表單並重新載入列表
+                    // 現在它會乖乖跑進成功區塊了！
+                    alert("課程儲存成功！");
+                    var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addCourseModal'));
+                    myModal.hide();
                     $scope.newCourse = { isActive: "true" };
-                    document.getElementById('courseImage').value = '';
+                    if(document.getElementById('courseImage')){
+                        document.getElementById('courseImage').value = '';
+                    }
                     $scope.loadCourses(); 
-                    
                 }, function (error) {
-                    alert("新增失敗，請檢查輸入資料或連線！");
-                    console.error(error);
+                    alert("儲存失敗！請按 F12 查看 Console");
+                    console.error("詳細錯誤:", error);
                 });
             };
 
             // 3. 刪除課程
             $scope.deleteCourse = function(id) {
                 if(confirm("確定要刪除這筆課程嗎？刪除後無法復原！")) {
-                    $http.delete('http://localhost:8080/api/courses/' + id).then(function(response) {
-                        alert("課程已刪除");
-                        $scope.loadCourses(); // 重新整理列表
+                    
+                    // 🌟 刪除請求也加上 { responseType: 'text' }
+                    $http.delete('http://localhost:8080/api/courses/' + id, { transformResponse: angular.identity })
+                    .then(function(response) {
+                        alert("課程已刪除！");
+                        $scope.loadCourses(); 
                     }, function(error) {
-                        alert("刪除失敗");
+                        alert("刪除失敗！請按 F12 查看 Console");
+                        console.error("詳細錯誤:", error);
                     });
+                    
                 }
             };
         });
-
-
-
     </script>
 </body>
 
