@@ -1,10 +1,10 @@
-package com.example.back.repository;
+/*package com.example.back.repository;
 
-public class OrdersRepository {
+import com.example.back.model.Orders;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
-}
+@Repository
+public interface OrdersRepository extends JpaRepository<Orders, Integer> {
+    // 這裡不需要寫程式碼，JpaRepository 已經內建了 findAll(), save(), deleteById() 等功能
+}*/
