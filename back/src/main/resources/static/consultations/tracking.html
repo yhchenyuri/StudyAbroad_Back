@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-TW" ng-app="studyApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>案件詳細追蹤 | StudyAbroad 後台</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary-dark: #0a2647;
+            --accent-orange: #ff9800;
+            --bg-light: #f0f4f8;
+            --logout-pink: #ff8a8a;
+        }
+
+        body { background-color: var(--bg-light); font-family: 'Noto Sans TC', sans-serif; margin: 0; display: flex; }
+        
+        /* 側邊欄 */
+        .sidebar { width: var(--sidebar-width); height: 100vh; background-color: var(--primary-dark); position: fixed; left: 0; top: 0; z-index: 1000; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 30px 20px; text-align: center; }
+        .logo-box { width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-orange), #ffb74d); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; margin: 0 auto 10px; }
+        .sidebar-nav { flex-grow: 1; padding: 10px 0; }
+        .nav-link { color: rgba(255, 255, 255, 0.7); padding: 12px 25px; margin: 4px 15px; border-radius: 12px; display: flex; align-items: center; transition: 0.3s; text-decoration: none; }
+        .nav-link:hover, .nav-link.active { background-color: rgba(255, 255, 255, 0.1); color: var(--accent-orange) !important; }
+        .sidebar-footer { padding: 20px 15px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-logout-cute { display: flex; align-items: center; text-decoration: none; color: var(--logout-pink); background: rgba(255, 138, 138, 0.1); padding: 12px 15px; border-radius: 15px; font-weight: 500; transition: 0.3s; }
+        .btn-logout-cute:hover { background: var(--logout-pink); color: white; transform: scale(1.02); }
+        .logout-icon { width: 32px; height: 32px; background: var(--logout-pink); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+
+        /* 主內容與卡片 */
+        .main-content { margin-left: var(--sidebar-width); flex-grow: 1; padding: 40px; min-height: 100vh; }
+        .back-link { text-decoration: none; color: var(--primary-dark); font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .back-link:hover { color: var(--accent-orange); }
+        .case-header-card { background: white; border-radius: 25px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: none; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .case-header-card::before { content: ""; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--accent-orange); }
+
+        /* 時間軸 Timeline */
+        .timeline { position: relative; padding-left: 30px; margin-top: 20px; }
+        .timeline::before { content: ""; position: absolute; left: 7px; top: 0; width: 2px; height: 100%; background: #e0e0e0; }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-dot { position: absolute; left: -30px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--accent-orange); border: 3px solid white; box-shadow: 0 0 0 2px var(--accent-orange); }
+        .timeline-content { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; }
+        .timeline-date { font-size: 0.8rem; color: #aaa; font-weight: 600; margin-bottom: 8px; display: block; }
+
+        /* 回報面板 */
+        .update-panel { position: sticky; top: 40px; background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: none; }
+        .btn-update { background: linear-gradient(135deg, var(--primary-dark), #1a4d8a); color: white; border: none; border-radius: 50px; padding: 12px; font-weight: 600; width: 100%; margin-top: 15px; transition: 0.3s;}
+        .btn-update:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(10,38,71,0.2); }
+        .status-badge-lg { padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; }
+    </style>
+</head>
+
+<body ng-controller="TrackingCtrl">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h6 class="text-white fw-bold mb-0">StudyAbroad</h6>
+            <small class="text-white-50">MANAGEMENT</small>
+        </div>
+        <div class="sidebar-nav">
+            <nav>
+                <a href="#" class="nav-link"><i class="fa-solid fa-book-open"></i> 課程管理</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-receipt"></i> 訂單管理</a>
+                <a href="management.html" class="nav-link active"><i class="fa-solid fa-headset"></i> 案件管理</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> 訪客紀錄</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-user-graduate"></i> 學生資料</a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="btn-logout-cute">
+                <div class="logout-icon"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
+                <span>登出系統</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <a href="management.html" class="back-link">
+                <i class="fa-solid fa-chevron-left me-2"></i> 返回案件列表
+            </a>
+            <div ng-show="successMsg" class="text-success fw-bold">
+                <i class="fa-solid fa-circle-check me-1"></i> {{ successMsg }}
+            </div>
+        </div>
+
+        <div class="case-header-card">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <span class="text-muted small fw-bold">CASE #{{ consultations.id }}</span>
+                    <h2 class="fw-bold text-dark mt-1">{{ consultations.appointmentsId.name }}</h2>
+                    <p class="mb-0 text-primary fw-bold"><i class="fa-solid fa-earth-americas me-2"></i>目標：國家 ID {{ consultations.appointmentsId.countryId }} - {{ consultations.appointmentsId.requirement }}</p>
+                </div>
+                <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                    <span class="status-badge-lg bg-primary-subtle text-primary">{{ consultations.status }}</span>
+                    <div class="mt-2">
+                        <small class="text-muted">最後更新：{{ consultations.lastUpdatedAt | date:'yyyy/MM/dd HH:mm' }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <h5 class="fw-bold mb-4"><i class="fa-solid fa-clock-rotate-left me-2 text-secondary"></i>聯繫歷史軌跡</h5>
+                
+                <div class="timeline">
+                    <div class="timeline-item" ng-repeat="record in consultations.records | orderBy:'-contactDate'">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">{{ record.contactDate | date:'yyyy/MM/dd HH:mm' }}</span>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-light text-dark border">{{ record.contactMethod }}</span>
+                                <span class="small fw-bold text-success">結果：{{ record.result }}</span>
+                            </div>
+                            <p class="small text-secondary mb-3">{{ record.content }}</p>
+                            <div class="p-2 bg-light rounded-3">
+                                <small class="fw-bold"><i class="fa-solid fa-arrow-right-long me-2 text-primary"></i>下一步：</small>
+                                <small class="text-dark">{{ record.nextStep }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" ng-if="consultations.assignedAt">
+                        <div class="timeline-dot" style="background: #ccc; box-shadow: 0 0 0 2px #ccc;"></div>
+                        <div class="timeline-content" style="background: #fafafa; border-style: dashed;">
+                            <span class="timeline-date">{{ consultations.assignedAt | date:'yyyy/MM/dd HH:mm' }}</span>
+                            <p class="small mb-0 text-muted"><i class="fa-solid fa-user-check me-2"></i>系統提示：主管已將案件指派給您，請儘速與學生聯繫。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="update-panel">
+                    <h5 class="fw-bold mb-4"><i class="fa-solid fa-pen-nib me-2 text-primary"></i>回報今日進度</h5>
+                    
+                    <form ng-submit="submitRecord()">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">聯繫方式</label>
+                            <select class="form-select rounded-3" ng-model="formData.contactMethod" required>
+                                <option value="" disabled selected>請選擇...</option>
+                                <option value="電話聯繫">電話聯繫</option>
+                                <option value="Line / 通訊軟體">Line / 通訊軟體</option>
+                                <option value="Email 郵件">Email 郵件</option>
+                                <option value="面談諮詢">面談諮詢</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">洽談內容摘要</label>
+                            <textarea class="form-control rounded-3" ng-model="formData.content" rows="4" placeholder="請輸入對談重點..." required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">本次聯繫結果</label>
+                            <select class="form-select rounded-3" ng-model="formData.result" required>
+                                <option value="" disabled selected>請選擇結果...</option>
+                                <option value="聯繫中 (待續)">聯繫中 (待續)</option>
+                                <option value="考慮中 (有興趣)">考慮中 (有興趣)</option>
+                                <option value="考慮中 (預算問題)">考慮中 (預算問題)</option>
+                                <option value="持續追蹤">持續追蹤</option>
+                                <option value="暫緩處理">暫緩處理</option>
+                                <option value="已成交 (準備簽約)">已成交 (準備簽約)</option>
+                                <option value="暫不考慮 (結案)">暫不考慮 (結案)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">下一步計畫</label>
+                            <input type="text" class="form-control rounded-3" ng-model="formData.nextStep" placeholder="例如：週五下午再次回電" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-update">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> 確認儲存並更新進度
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    
+    <script>
+    	const API_BASE_URL = '/api';
+
+        var app = angular.module('studyApp', []);
+        app.controller('TrackingCtrl', function($scope, $http, $window) {
+            
+            // 修正：變數名稱改為 consultations
+            $scope.consultations = {};
+            $scope.formData = {};
+
+            // 1. 解析網址取得 ID
+            var urlParams = new URLSearchParams($window.location.search);
+            var caseId = urlParams.get('id');
+
+            // 2. 初始化：載入該案件資料
+            $scope.loadData = function() {
+                if(!caseId) {
+                    alert("無效的案件 ID");
+                    $window.location.href = 'management.html';
+                    return;
+                }
+
+                $http.get(API_BASE_URL + '/consultations/' + caseId).then(function(res) {
+                    // 修正：將撈取的資料存入 $scope.consultations
+                    $scope.consultations = res.data;
+                }, function(error) {
+                    console.error("無法取得資料", error);
+                });
+            };
+
+            // 3. 送出追蹤紀錄
+            $scope.submitRecord = function() {
+                $scope.formData.consultationId = parseInt(caseId); // 確保傳遞的是數字
+
+                $http.post(API_BASE_URL + '/consultations/addRecord', $scope.formData).then(function(res) {
+                    $scope.successMsg = "追蹤紀錄更新成功！";
+                    $scope.formData = {}; // 清空表單
+                    
+                    // 重新撈取資料，讓左側時間軸與上方狀態自動更新
+                    $scope.loadData();
+                    
+                    // 3秒後隱藏成功訊息
+                    setTimeout(function(){ 
+                        $scope.$apply(function(){ $scope.successMsg = null; }); 
+                    }, 3000);
+                });
+            };
+
+            // 啟動執行
+            $scope.loadData();
+        });
+    </script>
+</body>
+</html>
