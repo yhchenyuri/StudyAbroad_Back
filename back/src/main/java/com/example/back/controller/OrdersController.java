@@ -1,7 +1,7 @@
-/* package com.example.back.controller;
+package com.example.back.controller;
 
 import com.example.back.model.Orders;
-//import com.example.back.model.Courses;
+import com.example.back.model.Courses;
 import com.example.back.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,4 +42,4 @@ public class OrdersController {
             return ResponseEntity.internalServerError().body(Map.of("message", "刪除失敗：" + e.getMessage()));
         }
     }
-}*/
+}

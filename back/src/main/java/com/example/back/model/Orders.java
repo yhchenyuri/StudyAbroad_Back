@@ -1,4 +1,4 @@
-/* package com.example.back.model;
+package com.example.back.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Table(name = "orders")
 public class Orders {
 
-	/*    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -28,7 +28,7 @@ public class Orders {
     // 關聯負責員工/業務 (employees_id)
     @ManyToOne
     @JoinColumn(name = "employees_id")
-    private Employees employee;
+    private Employee employee;
 
     @Column(name = "agency_fee", precision = 10, scale = 2)
     private BigDecimal agencyFee;
@@ -87,11 +87,11 @@ public class Orders {
         this.course = course;
     }
 
-    public Employees getEmployee() {
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setEmployee(Employees employee) {
+    public void setEmployee(Employee employee) {
         this.employee = employee;
     }
 
@@ -134,4 +134,4 @@ public class Orders {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
-}*/
+}

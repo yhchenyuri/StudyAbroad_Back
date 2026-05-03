@@ -56,9 +56,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/students")
+@RequestMapping("/api/students")
 public class StudentsController {
 
     private final StudentsRepository studentsRepository;
@@ -66,8 +66,13 @@ public class StudentsController {
     /**
      * 📌 列表頁：顯示所有學生
      */
-    @GetMapping
-    public String list(Model model) {
+    @GetMapping("/list")
+    public List<Students> list() {
+        // 直接回傳 List，Spring Boot 會自動幫我們把它翻譯成 JSON 格式！
+        return studentsRepository.findAll();
+    }
+    
+    /*public String list(Model model) {
 
         List<Students> students = studentsRepository.findAll();
 
@@ -77,7 +82,7 @@ public class StudentsController {
         model.addAttribute("student", new Students());
 
         return "students"; // templates/students.html
-    }
+    }*/
 
     /**
      * 📌 單一學生 API（給 modal / AJAX 用）

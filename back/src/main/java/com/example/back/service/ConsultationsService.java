@@ -17,7 +17,7 @@ public class ConsultationsService {
     @Autowired
     private ConsultationRecordsRepository recordsRepo;
     @Autowired
-    private EmployeesRepository employeesRepo;
+    private EmployeeRepository employeesRepo;
 
     public List<Consultations> getAllConsultations() {
         return consultationsRepo.findAll();
@@ -36,7 +36,7 @@ public class ConsultationsService {
         Consultations consultation = consultationsRepo.findById(consultationId)
                 .orElseThrow(() -> new RuntimeException("找不到該筆諮詢案件"));
                 
-        Employees newEmployee = employeesRepo.findById(newEmployeeId)
+        Employee newEmployee = employeesRepo.findById(newEmployeeId)
                 .orElseThrow(() -> new RuntimeException("找不到指定的業務顧問"));
 
         // 2. 記錄舊的業務名稱 (用於存檔備註)
