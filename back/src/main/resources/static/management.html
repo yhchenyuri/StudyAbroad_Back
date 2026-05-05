@@ -264,7 +264,9 @@
                             <td>
                                 <div class="requirement-box shadow-sm">
                                    <span class="requirement-text">
-                                       <span class="country-tag">[國家: {{ item.appointmentsId.countryId }}]</span>
+                                       <!-- 🌟 將原本的 countryId 修改為 country.name 或是 countryId.name -->
+                                       <!-- 🌟 直接把數字丟進函數裡翻譯 -->
+								   		<span class="country-tag">[{{ getCountryName(item.appointmentsId.countryId) }}]</span>
                                        {{ item.appointmentsId.requirement }}
                                    </span>
                                 </div>
@@ -345,6 +347,21 @@
             $http.get('/api/auth/me').then(function(response) {
                 $scope.userRole = response.data.role;
             });
+
+
+         // 🌟 新增：國家代碼翻譯字典
+            $scope.getCountryName = function(id) {
+                // 這裡請依照你資料庫裡的真實 ID 與國家名稱設定
+                const countryMap = {
+                    1: '台灣',
+                    2: '美國',
+                    3: '英國',
+                    4: '加拿大',
+                       
+                };
+                // 如果找不到該數字對應的國家，就顯示「未知(ID)」
+                return countryMap[id] || '未知 (' + id + ')';
+            };
 
             $scope.init = function() {
                 $http.get(API_BASE_URL + '/consultations/all').then(function(res) {

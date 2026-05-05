@@ -190,7 +190,8 @@
                 <div class="col-md-7">
                     <span class="text-muted small fw-bold">CASE #{{ consultations.id }}</span>
                     <h2 class="fw-bold text-dark mt-1">{{ consultations.appointmentsId.name }}</h2>
-                    <p class="mb-0 text-primary fw-bold"><i class="fa-solid fa-earth-americas me-2"></i>目標：國家 ID {{ consultations.appointmentsId.countryId }} - {{ consultations.appointmentsId.requirement }}</p>
+                    <!-- 🌟 修正：拿掉 ID，並套用 getCountryName 函數 -->
+                    <p class="mb-0 text-primary fw-bold"><i class="fa-solid fa-earth-americas me-2"></i>目標： {{ getCountryName(consultations.appointmentsId.countryId) }} - {{ consultations.appointmentsId.requirement }}</p>
                 </div>
                 <div class="col-md-5 text-md-end mt-3 mt-md-0">
                     <span class="status-badge-lg bg-primary-subtle text-primary">{{ consultations.status }}</span>
@@ -299,6 +300,17 @@
             $http.get('/api/auth/me').then(function(response) {
                 $scope.userRole = response.data.role;
             });
+
+            // 🌟 新增：國家代碼翻譯字典
+            $scope.getCountryName = function(id) {
+                const countryMap = {
+                		 1: '台灣',
+                         2: '美國',
+                         3: '英國',
+                         4: '加拿大',
+                };
+                return countryMap[id] || '未知 (' + id + ')';
+            };
 
             // 1. 解析網址取得 ID
             var urlParams = new URLSearchParams($window.location.search);
