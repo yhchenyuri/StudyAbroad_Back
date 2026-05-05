@@ -1,7 +1,8 @@
-/*package com.example.back.service;
+package com.example.back.service;
 
-//import com.example.back.model.Orders;
-//import com.example.back.model.Courses;
+import com.example.back.model.Orders;
+import com.example.back.model.Courses;
+import com.example.back.repository.CoursesRepository;
 import com.example.back.repository.OrdersRepository;
 //import com.example.back.repository.CoursesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Service
 public class OrdersService {
 
-/*   @Autowired
+   @Autowired
     private OrdersRepository ordersRepo;
 
     @Autowired
@@ -48,4 +49,4 @@ public class OrdersService {
         }
         return ordersRepo.save(order);
     }
-}*/
+}

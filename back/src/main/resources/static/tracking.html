@@ -18,19 +18,111 @@
             --logout-pink: #ff8a8a;
         }
 
-        body { background-color: var(--bg-light); font-family: 'Noto Sans TC', sans-serif; margin: 0; display: flex; }
+        body { background-color: var(--bg-light); font-family: 'Noto Sans TC', 'Montserrat', sans-serif; margin: 0; display: flex; overflow-x: hidden; }
         
-        /* 側邊欄 */
-        .sidebar { width: var(--sidebar-width); height: 100vh; background-color: var(--primary-dark); position: fixed; left: 0; top: 0; z-index: 1000; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 30px 20px; text-align: center; }
-        .logo-box { width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-orange), #ffb74d); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; margin: 0 auto 10px; }
-        .sidebar-nav { flex-grow: 1; padding: 10px 0; }
-        .nav-link { color: rgba(255, 255, 255, 0.7); padding: 12px 25px; margin: 4px 15px; border-radius: 12px; display: flex; align-items: center; transition: 0.3s; text-decoration: none; }
-        .nav-link:hover, .nav-link.active { background-color: rgba(255, 255, 255, 0.1); color: var(--accent-orange) !important; }
-        .sidebar-footer { padding: 20px 15px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-logout-cute { display: flex; align-items: center; text-decoration: none; color: var(--logout-pink); background: rgba(255, 138, 138, 0.1); padding: 12px 15px; border-radius: 15px; font-weight: 500; transition: 0.3s; }
-        .btn-logout-cute:hover { background: var(--logout-pink); color: white; transform: scale(1.02); }
-        .logout-icon { width: 32px; height: 32px; background: var(--logout-pink); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+       /* --- 側邊欄 Sidebar --- */
+         .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--primary-dark);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-orange), #ffb74d);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 auto 10px;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 10px 0;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 25px;
+            margin: 4px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-link i {
+            width: 30px;
+            font-size: 1.1rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-orange) !important;
+        }
+
+         /* --- 左下角登出按鈕 --- */
+        .sidebar-footer {
+            padding: 20px 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-logout-cute {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--logout-pink);
+            background: rgba(255, 138, 138, 0.1);
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logout-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--logout-pink);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-logout-cute:hover {
+            background: var(--logout-pink);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 138, 138, 0.3);
+        }
+
+        .btn-logout-cute:hover .logout-icon {
+            background: white;
+            color: var(--logout-pink);
+            transform: rotate(-10deg);
+        }
 
         /* 主內容與卡片 */
         .main-content { margin-left: var(--sidebar-width); flex-grow: 1; padding: 40px; min-height: 100vh; }
@@ -61,20 +153,23 @@
         <div class="sidebar-header">
             <div class="logo-box"><i class="fa-solid fa-graduation-cap"></i></div>
             <h6 class="text-white fw-bold mb-0">StudyAbroad</h6>
-            <small class="text-white-50">MANAGEMENT</small>
+            <small class="text-white-50" style="letter-spacing: 1px;">MANAGEMENT</small>
         </div>
         <div class="sidebar-nav">
             <nav>
-                <a href="#" class="nav-link"><i class="fa-solid fa-book-open"></i> 課程管理</a>
-                <a href="#" class="nav-link"><i class="fa-solid fa-receipt"></i> 訂單管理</a>
-                <a href="management.html" class="nav-link active"><i class="fa-solid fa-headset"></i> 案件管理</a>
-                <a href="#" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> 訪客紀錄</a>
-                <a href="#" class="nav-link"><i class="fa-solid fa-user-graduate"></i> 學生資料</a>
-            </nav>
+            <a href="/courses.html" class="nav-link"><i class="fa-solid fa-book-open"></i> 課程管理</a>
+            <a href="/orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> 訂單管理</a>
+            <a href="/visitors.html" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> 訪客紀錄</a>
+            <a href="/management.html" class="nav-link active"><i class="fa-solid fa-headset"></i> 案件管理</a>
+            <a href="/students.html" class="nav-link"><i class="fa-solid fa-user-graduate"></i> 學生資料</a>
+            <a href="/staff.html" class="nav-link" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'"><i class="fa-solid fa-user-gear"></i> 員工管理</a>
+        </nav>
         </div>
-        <div class="sidebar-footer">
-            <a href="#" class="btn-logout-cute">
-                <div class="logout-icon"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
+       <div class="sidebar-footer">
+            <a href="/login.html" class="btn-logout-cute">
+                <div class="logout-icon">
+                    <i class="fa-solid fa-person-walking-arrow-right"></i>
+                </div>
                 <span>登出系統</span>
             </a>
         </div>
@@ -198,6 +293,12 @@
             // 修正：變數名稱改為 consultations
             $scope.consultations = {};
             $scope.formData = {};
+
+            // 🌟 取得使用者權限 (讓左側邊欄的員工管理能正確顯示)
+            $scope.userRole = "";
+            $http.get('/api/auth/me').then(function(response) {
+                $scope.userRole = response.data.role;
+            });
 
             // 1. 解析網址取得 ID
             var urlParams = new URLSearchParams($window.location.search);
