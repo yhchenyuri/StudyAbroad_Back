@@ -287,7 +287,10 @@
                             <td>
                                 <img ng-src="http://localhost:8080/api/courses/{{course.id}}/image" alt="Course" style="width: 50px; height: 35px; object-fit: cover; border-radius: 5px;">
                             </td>
-                            <td><span class="badge bg-light text-dark border me-1">國家</span> {{course.countryId}}</td>
+                            <td style="min-width: 130px; white-space: nowrap !important;">
+                                <span class="badge bg-light text-dark border me-1">國家</span> 
+                                <span class="fw-bold" style="display: inline-block;">{{ getCountryName(course.countryId) }}</span>
+                            </td>
                             <td><code>{{course.id}}</code></td>
                             <td class="fw-bold">{{course.courseName}}</td>
                             <td class="text-primary fw-bold">NT${{course.price}}</td>
@@ -298,9 +301,9 @@
                                <span class="badge bg-info text-dark">{{ course.currentEnrollment || 0 }} 人</span>
                             </td>
                             <td><small>{{ course.startDate || '未定' }} - {{ course.endDate || '未定' }}</small></td>
-                            <td>
-                                 <span class="status-badge" ng-class="course.isActive ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
-                                    {{ course.isActive ? '上架中' : '已下架' }}
+                            <td style="min-width: 100px; white-space: nowrap !important;">
+                                <span class="status-badge d-inline-block" ng-class="course.isActive ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'" style="width: 80px; text-align: center;">
+                                {{ course.isActive ? '上架中' : '已下架' }}
                                 </span>
                             </td>
                             <td class="text-end" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'">
@@ -388,6 +391,12 @@
             
             $scope.courses = [];
             $scope.newCourse = { isActive: "true" };
+
+            $scope.getCountryName = function(id) {
+                if (id == 2) return "美國";
+                if (id == 3) return "英國";
+                return "未知 (" + id + ")"; // 防呆機制
+            };
 
             $scope.userRole = "";
             $http.get('http://localhost:8080/api/auth/me').then(function(response) {
