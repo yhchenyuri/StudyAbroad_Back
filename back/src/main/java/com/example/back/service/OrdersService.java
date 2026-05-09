@@ -4,7 +4,6 @@ import com.example.back.model.Orders;
 import com.example.back.model.Courses;
 import com.example.back.repository.CoursesRepository;
 import com.example.back.repository.OrdersRepository;
-//import com.example.back.repository.CoursesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Service
 public class OrdersService {
 
-   @Autowired
+    @Autowired
     private OrdersRepository ordersRepo;
 
     @Autowired
@@ -41,12 +40,32 @@ public class OrdersService {
         }
     }
 
-   
+    // 🌟 新增訂單 (包含自動產生 UUID)
     @Transactional
-    public Orders saveOrder(Orders order) {
+    public void createOrder(Orders order) {
         if (order.getUuid() == null || order.getUuid().isEmpty()) {
             order.setUuid(UUID.randomUUID().toString());
         }
-        return ordersRepo.save(order);
+        ordersRepo.save(order);
+    }
+
+    // 🌟 更新訂單
+    @Transactional
+    public void updateOrder(Integer id, Orders orderDetails) {
+        // 1. 先從資料庫找出原有的訂單
+        Orders existingOrder = ordersRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("找不到該筆訂單"));
+
+        // 2. 依照你 Orders.java 的標準 Setter 更新欄位資料
+        existingOrder.setStudent(orderDetails.getStudent());
+        existingOrder.setCourse(orderDetails.getCourse());
+        existingOrder.setEmployee(orderDetails.getEmployee());
+        existingOrder.setAgencyFee(orderDetails.getAgencyFee());
+        existingOrder.setDiscountRate(orderDetails.getDiscountRate());
+        existingOrder.setFinalFee(orderDetails.getFinalFee());
+        existingOrder.setOrderStatus(orderDetails.getOrderStatus());
+
+        // 3. 儲存修改
+        ordersRepo.save(existingOrder);
     }
 }

@@ -226,7 +226,7 @@
             <a href="/visitors.html" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> 訪客紀錄</a>
             <a href="/management.html" class="nav-link"><i class="fa-solid fa-headset"></i> 案件管理</a>
             <a href="/students.html" class="nav-link"><i class="fa-solid fa-user-graduate"></i> 學生資料</a>
-            <a href="/staff.html" class="nav-link" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'"><i class="fa-solid fa-user-gear"></i> 員工管理</a>
+            <a href="/staff.html" class="nav-link" ng-if="userRole === 'ROLE_ADMIN'"><i class="fa-solid fa-user-gear"></i> 員工管理</a>
         </nav>
         </div>
 
@@ -246,7 +246,7 @@
                 <h3 class="fw-bold text-dark">課程專案管理</h3>
                 <p class="text-muted small">在此管理各國留學課程與報名狀態</p>
             </div>
-            <button class="btn btn-add" ng-click="openAddModal()" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'">
+            <button class="btn btn-add" ng-click="openAddModal()" ng-if="userRole === 'ROLE_ADMIN'">
                 <i class="fa-solid fa-plus me-2"></i> 新增課程
             </button>
         </div>
@@ -279,7 +279,7 @@
                             <th>報名人數 (已報)</th>
                             <th>日期範圍</th>
                             <th>狀態</th>
-                            <th class="text-end" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'">操作</th>
+                            <th class="text-end" ng-if="userRole === 'ROLE_ADMIN'">操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -306,7 +306,7 @@
                                 {{ course.isActive ? '上架中' : '已下架' }}
                                 </span>
                             </td>
-                            <td class="text-end" ng-if="userRole === 'ROLE_ADMIN' || userRole === 'ROLE_MANAGER'">
+                            <td class="text-end" ng-if="userRole === 'ROLE_ADMIN'">
                                 <button class="btn btn-sm btn-light rounded-circle me-1" ng-click="openEditModal(course)">
                                 <i class="fa-solid fa-pen-to-square"></i></button>
                                 <button class="btn btn-sm btn-light text-danger rounded-circle" ng-click="deleteCourse(course.id)"><i class="fa-solid fa-trash-can"></i></button>

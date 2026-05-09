@@ -66,9 +66,14 @@ public class StudentsController {
     /**
      * 📌 列表頁：顯示所有學生
      */
-    @GetMapping("/list")
+    /*@GetMapping("/list")
     public List<Students> list() {
         // 直接回傳 List，Spring Boot 會自動幫我們把它翻譯成 JSON 格式！
+        return studentsRepository.findAll();
+    }*/
+    
+    @GetMapping({"/list", "/all"}) // 🌟 注意這裡加上了大括號 {} 變成陣列
+    public List<Students> getAllStudents() {
         return studentsRepository.findAll();
     }
     
@@ -94,5 +99,7 @@ public class StudentsController {
         return studentsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found: " + id));
     }
+    
+    
 
 }

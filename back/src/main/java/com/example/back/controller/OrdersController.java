@@ -42,4 +42,32 @@ public class OrdersController {
             return ResponseEntity.internalServerError().body(Map.of("message", "刪除失敗：" + e.getMessage()));
         }
     }
+    
+    @PostMapping("")
+    public ResponseEntity<Map<String, String>> createOrder(@RequestBody Orders order)
+    {
+        try 
+        {
+            ordersService.createOrder(order);
+            return ResponseEntity.ok(Map.of("message", "訂單建立成功！"));
+        } 
+        catch (Exception e) 
+        {
+            return ResponseEntity.badRequest().body(Map.of("message", "建立失敗：" + e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, String>> updateOrder(@PathVariable Integer id, @RequestBody Orders orderDetails)
+    {
+        try 
+        {
+            ordersService.updateOrder(id, orderDetails);
+            return ResponseEntity.ok(Map.of("message", "訂單修改成功！"));
+        } 
+        catch (Exception e) 
+        {
+            return ResponseEntity.badRequest().body(Map.of("message", "修改失敗：" + e.getMessage()));
+        }
+    }
 }
